@@ -34,7 +34,7 @@ module slave #(
         if (scl) start_reg <= 1'b1;
     end
 
-    // --- Main FSM: Sampling on POSEDGE ---
+    //fsm
     always @(posedge scl or posedge rst) begin
         if (rst) begin
             state      <= IDLE;
@@ -83,7 +83,7 @@ module slave #(
         end
     end
 
-    // --- ACK Generation: Driving on NEGEDGE ---
+    
     // This prevents race conditions by changing SDA while SCL is LOW
     always @(negedge scl or posedge rst) begin
         if (rst) begin
