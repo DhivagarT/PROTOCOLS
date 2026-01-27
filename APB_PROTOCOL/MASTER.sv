@@ -1,5 +1,5 @@
           
-module requester
+module master
   (input pclk,
    input presetn,
    input start,
