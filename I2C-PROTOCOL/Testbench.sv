@@ -62,7 +62,7 @@ module tb_i2c;
         enable = 0;
 
         // 3. Wait specifically for the Slave to signal it got data
-        // We give it a generous timeout using fork/join_any
+
         fork
             begin
                 wait(data_valid_slave == 1);
