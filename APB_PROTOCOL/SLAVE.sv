@@ -1,4 +1,4 @@
-module completer
+module slave
   (input pclk,
    input presetn,
    
