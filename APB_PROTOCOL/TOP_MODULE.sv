@@ -1,56 +1,73 @@
-`include "Master.sv"
-`include "Slave.sv"
 
-module top
-  (
-    input  pclk,
-    input  presetn,
+  
+  
+`include "master.sv"
+`include "slave_1.sv"
 
-    // driven from testbench
-    input  start,
-    input  [7:0] tb_paddr,
-    input  [7:0] tb_pwdata
-  );
+module top_module(
+  input pclk,
+  input preset_n,
 
-  // APB bus wires
-  wire [7:0] paddr;
-  wire [7:0] pwdata;
-  wire [7:0] prdata;
+  // User interface
+  input req_start,
+  input req_write,
+  input req_psel,
+  input req_penb,
+  input [7:0] pwrdata,
+  input [3:0] pwraddr,
+  
+  output [7:0]rdata,
+  output pslverr
+  
+);
+
+  // Internal APB bus signals
+  wire [1:0]psel;
+  wire penb;
   wire pwrite;
-  wire penable;
-  wire psel;
+  wire [7:0] pwdata;
+  wire [3:0] paddr;
+  wire [7:0] prdata;
   wire pready;
-  wire pslverr;
 
   // MASTER
-  master dut1 (
-    .pclk (pclk),
-    .presetn (presetn),
-    .start (start),
-    .paddr(tb_paddr),
-    .pwdata(tb_pwdata),
-    .pready(pready),
+  apb_master dut1(
+    .pclk(pclk),
+    .preset_n(preset_n),
+    .req_psel(req_psel),
+    .req_penb(req_penb),
+    .req_start(req_start),
+    .req_write(req_write),
+    .pwrdata(pwrdata),
+    .pwaddr(pwraddr),
 
-    .pwrite(pwrite),
-    .penable(penable),
+    .pready(pready),
+    .prdata(prdata),
+
     .psel(psel),
-    .addr_in(),        // optional
-    .data_in()         // optional
+    .penb(penb),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .paddr(paddr),
+    .rdata(rdata)
   );
 
   // SLAVE
-  slave dut2 (
-    .pclk (pclk),
-    .presetn(presetn),
-    .paddr (paddr),
-    .pwdata (pwdata),
-    .pwrite (pwrite),
-    .penable (penable),
-    .psel (psel),
+  apb_slave dut2(
+    .pclk(pclk),
+    .preset_n(preset_n),
 
-    .pready (pready),
-    .prdata (prdata),
-    .pslverr(pslverr)
+    .psel(psel),
+    .penb(penb),
+    .pwrite(pwrite),
+    .pwdata(pwdata),
+    .paddr(paddr),
+
+    .pready(pready),
+    .pslverr(pslverr),
+    .prdata(prdata)
   );
 
+  
+  
 endmodule
